@@ -11,27 +11,20 @@ app.get('/', (req, res) => {
 });
 
 wss.on('connection', (ws) => {
-  ws.on('message', (data) => {
-    const message = JSON.parse(data);
-
-    if (message.typing !== undefined) {
-      // Envia mensaje de estado de escritura a otros clientes
-      wss.clients.forEach((client) => {
-        if (client !== ws && client.readyState === WebSocket.OPEN) {
-          client.send(JSON.stringify({ typing: message.typing }));
-        }
-      });
-    } else {
-      // Envia mensaje normalmente
-      wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
-          client.send(JSON.stringify({ content: message.content }));
-        }
-      });
-    }
+  // Evento que se ejecuta cuando se recibe un mensaje del cliente
+  ws.on('message', (message) => {
+    // Envia el mensaje a todos los clientes conectados
+    wss.clients.forEach((client) => {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
   });
 });
 
-server.listen(8080, () => {
-  console.log('Servidor de websockets iniciado en el puerto 8080');
+// Utiliza el puerto proporcionado por Vercel o el 8080 si se ejecuta localmente
+const port = process.env.PORT || 8080;
+
+server.listen(port, () => {
+  console.log(`Servidor de websockets iniciado en el puerto ${port}`);
 });
