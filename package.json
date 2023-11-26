@@ -6,7 +6,6 @@
   "name": "serverp",
   "version": "1.0.0",
   "main": "websocket_server.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
