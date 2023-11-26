@@ -23,7 +23,7 @@ wss.on('connection', (ws) => {
 });
 
 // Utiliza el puerto proporcionado por Vercel o el 8080 si se ejecuta localmente
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 
 server.listen(port, () => {
   console.log(`Servidor de websockets iniciado en el puerto ${port}`);

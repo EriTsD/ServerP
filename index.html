@@ -6,52 +6,32 @@
   <title>Chat WebSocket</title>
 </head>
 <body>
-  <input type="text" id="messageInput" placeholder="Escribe tu mensaje" oninput="typingEvent()">
+  <input type="text" id="messageInput" placeholder="Escribe tu mensaje">
   <button onclick="sendMessage()">Enviar</button>
   <div id="chat"></div>
 
   <script>
     const socket = new WebSocket('wss://server-p-eritsd.vercel.app');
-
-    // Manejar evento de escritura
-    function typingEvent() {
-      const messageInput = document.getElementById('messageInput');
-      const isTyping = messageInput.value.trim() !== '';  // Verifica si el campo de entrada está vacío
-
-      // Envia mensaje indicando el estado de escritura
-      socket.send(JSON.stringify({ typing: isTyping }));
-    }
+  
+    socket.onopen = function (event) {
+    console.log('Conexión WebSocket establecida');
+    };
 
     socket.onmessage = function (event) {
       const chatDiv = document.getElementById('chat');
-      const message = JSON.parse(event.data);
-
-      // Verifica si el mensaje contiene información de escritura
-      if (message.typing !== undefined) {
-        displayTypingStatus(message.typing);
-      } else {
-        // Muestra el mensaje normalmente
-        chatDiv.innerHTML += '<p>' + message.content + '</p>';
-      }
+      chatDiv.innerHTML += '<p>' + event.data + '</p>';
     };
-
+  
     function sendMessage() {
       const messageInput = document.getElementById('messageInput');
       const message = messageInput.value;
-
-      socket.send(JSON.stringify({ content: message }));
-
+  
+      socket.send(message);
+  
       // Limpia el campo de entrada
       messageInput.value = '';
     }
-
-    // Muestra el estado de escritura
-    function displayTypingStatus(isTyping) {
-      const chatDiv = document.getElementById('chat');
-      const typingStatus = isTyping ? 'Escribiendo...' : '';
-
-      chatDiv.innerHTML = '<p class="typing-status">' + typingStatus + '</p>';
-    }
   </script>
+  
 </body>
 </html>
